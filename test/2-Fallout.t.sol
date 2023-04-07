@@ -4,7 +4,7 @@ pragma solidity ^0.8.13;
 import "forge-std/Test.sol";
 import "../src/2-Fallout.sol";
 
-contract falloutTest is Test {
+contract FalloutTest is Test {
     Fallout public falloutCTF;
 
     function setUp() public {
