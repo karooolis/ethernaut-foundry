@@ -12,13 +12,11 @@ contract GatekeeperOne {
     }
 
     modifier gateTwo() {
-        // require(gasleft() % 8191 == 0);
+        require(gasleft() % 8191 == 0);
         _;
     }
 
     modifier gateThree(bytes8 _gateKey) {
-        console.log("hello 3");
-
         require(
             uint32(uint64(_gateKey)) == uint16(uint64(_gateKey)),
             "GatekeeperOne: invalid gateThree part one"
