@@ -7,11 +7,11 @@ import "../src/14-NaughtCoin.sol";
 contract NaughtCoinTest is Test {
     NaughtCoin public naughtCoinCTF;
 
+    address player = address(0x1);
+
     function setUp() public {
-        naughtCoinCTF = new NaughtCoin();
+        naughtCoinCTF = new NaughtCoin(player);
     }
 
-    function testAttack() public {
-
-    }
+    function testAttack() public {}
 }
