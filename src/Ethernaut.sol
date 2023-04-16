@@ -89,7 +89,9 @@ contract Ethernaut is Ownable {
         return instance;
     }
 
-    function submitLevelInstance(address payable _instance) public {
+    function submitLevelInstance(
+        address payable _instance
+    ) public returns (bool) {
         // Get player and level.
         EmittedInstanceData storage data = emittedInstances[_instance];
         require(
@@ -103,19 +105,12 @@ contract Ethernaut is Ownable {
             // Register instance as completed.
             data.completed = true;
 
-            statistics.submitSuccess(
-                _instance,
-                address(data.level),
-                msg.sender
-            );
             // Notify success via logs.
             emit LevelCompletedLog(msg.sender, _instance, address(data.level));
+
+            return true;
         } else {
-            statistics.submitFailure(
-                _instance,
-                address(data.level),
-                msg.sender
-            );
+            return false;
         }
     }
 }
