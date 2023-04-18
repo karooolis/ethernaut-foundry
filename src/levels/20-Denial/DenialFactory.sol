@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "forge-std/Test.sol";
-
 import "../base/Level.sol";
 import "./Denial.sol";
 
@@ -31,15 +29,12 @@ contract DenialFactory is Level {
             return false;
         }
 
-        console.log("validating instance");
-
         // fix the gas limit for this call
         (bool result, ) = address(instance).call{gas: 1000000}(
             abi.encodeWithSignature("withdraw()")
-        ); // Must revert
-
-        console.log("result", result);
-
+        );
+        
+        // Must revert
         return !result;
     }
 
