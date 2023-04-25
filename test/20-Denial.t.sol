@@ -12,7 +12,6 @@ contract DenialTest is Test {
     Denial public denial;
 
     address public attacker = address(0x1);
-
     address internal _levelAddr;
 
     function setUp() public {
