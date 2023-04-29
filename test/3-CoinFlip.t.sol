@@ -3,7 +3,6 @@ pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
 import "./utils/BaseTest.sol";
-import "../src/Ethernaut.sol";
 import "../src/levels/3-CoinFlip/CoinFlip.sol";
 import "../src/levels/3-CoinFlip/CoinFlipFactory.sol";
 

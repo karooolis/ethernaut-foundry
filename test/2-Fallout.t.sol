@@ -3,7 +3,6 @@ pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
 import "./utils/BaseTest.sol";
-import "../src/Ethernaut.sol";
 import "../src/levels/2-Fallout/Fallout.sol";
 import "../src/levels/2-Fallout/FalloutFactory.sol";
 
