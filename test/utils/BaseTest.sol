@@ -18,6 +18,7 @@ contract BaseTest is Test {
 
         // attacker setup
         attacker = makeAddr("attacker");
+        vm.deal(attacker, 100 ether);
     }
 
     /// @dev Create a level instance
