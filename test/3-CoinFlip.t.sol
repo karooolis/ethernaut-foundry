@@ -24,7 +24,7 @@ contract CoinFlipTest is Test, BaseTest {
         _validateLevel();
     }
 
-    function _attack() internal override {
+    function _attack() public override {
         vm.startPrank(attacker);
 
         for (uint256 i = 0; i < 10; i++) {

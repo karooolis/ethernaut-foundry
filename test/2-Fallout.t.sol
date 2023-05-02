@@ -24,7 +24,7 @@ contract FalloutTest is Test, BaseTest {
         _validateLevel();
     }
 
-    function _attack() internal override {
+    function _attack() public override {
         vm.startPrank(attacker);
 
         // 1. Initialize the contract & claim ownership

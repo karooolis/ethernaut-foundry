@@ -24,7 +24,7 @@ contract TelephoneTest is Test, BaseTest {
         _validateLevel();
     }
 
-    function _attack() internal override {
+    function _attack() public override {
         vm.startPrank(attacker);
 
         // 1. Call changeOwner from attacking contract

@@ -25,7 +25,7 @@ contract DexTwoTest is Test, BaseTest {
         _validateLevel();
     }
 
-    function _attack() internal override {
+    function _attack() public override {
         address token1 = level.token1();
         address token2 = level.token2();
 
