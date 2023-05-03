@@ -22,6 +22,7 @@ contract PuzzleWalletFactory is Level {
             PuzzleWallet.init.selector,
             100 ether
         );
+
         PuzzleProxy proxy = new PuzzleProxy(
             address(this),
             address(walletLogic),
@@ -41,7 +42,6 @@ contract PuzzleWalletFactory is Level {
         address _player
     ) public view override returns (bool) {
         PuzzleProxy proxy = PuzzleProxy(_instance);
-
         return proxy.admin() == _player;
     }
 }
