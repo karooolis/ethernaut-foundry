@@ -8,6 +8,7 @@ import "../src/levels/28-GatekeeperThree/SimpleTrick.sol";
 import "../src/levels/28-GatekeeperThree/GatekeeperThree.sol";
 import "../src/levels/28-GatekeeperThree/GatekeeperThreeFactory.sol";
 
+// Note: run the test with attacker as tx.origin i.e. --sender 0x9dF0C6b0066D5317aA5b38B36850548DaCCa6B4e
 contract GatekeeperThreeTest is Test, BaseTest {
     GatekeeperThree public level;
 
